@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register Student</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+        body {
+            background-color: #f8f9fa;
+        }
+        .container {
+            background-color: white;
+            border-radius: 8px;
+            padding: 30px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+            color: #007bff;
+        }
+        .form-group label {
+            font-weight: bold;
+        }
+        #upload-section {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    {% include 'navbar.html' %}
+
+    <!-- Registration Form -->
+    <div class="container mt-4">
+        <h1>Register Student</h1>
+        <form method="POST" enctype="multipart/form-data">
+            <div class="form-group">
+                <label for="student_name">Student Name: </label>
+                <input type="text" class="form-control" name="student_name" required>
+            </div>
+
+            <div class="form-group">
+                <label for="method">Choose Registration Method:</label><br>
+                <div class="form-check form-check-inline">
+                    <input type="radio" class="form-check-input" id="webcam" name="method" value="webcam" required>
+                    <label class="form-check-label" for="webcam">Capture via Webcam</label>
+                </div>
+                <div class="form-check form-check-inline">
+                    <input type="radio" class="form-check-input" id="upload" name="method" value="upload">
+                    <label class="form-check-label" for="upload">Upload Images</label>
+                </div>
+            </div>
+
+            <div id="upload-section" class="form-group">
+                <label for="face_images">Upload Face Images: </label>
+                <input type="file" class="form-control-file" name="face_images" accept="image/*" multiple><br><br>
+            </div>
+
+            <button type="submit" class="btn btn-primary">Register</button>
+        </form>
+    </div>
+
+    <script>
+        // Toggle upload section visibility
+        document.querySelector('input[name="method"][value="upload"]').addEventListener('change', function() {
+            document.getElementById('upload-section').style.display = 'block';
+        });
+        document.querySelector('input[name="method"][value="webcam"]').addEventListener('change', function() {
+            document.getElementById('upload-section').style.display = 'none';
+        });
+    </script>
+
+</body>
+</html>

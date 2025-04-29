@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mark Attendance</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+        video, canvas {
+            width: 100%;
+            max-width: 100%;
+            height: auto;
+            border: 2px solid #007bff;
+            border-radius: 5px;
+        }
+        .container {
+            background-color: white;
+            border-radius: 8px;
+            padding: 30px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        h1, h2 {
+            color: #007bff;
+        }
+        .form-group {
+            margin-top: 20px;
+        }
+        .nav-buttons {
+            margin-top: 20px;
+        }
+        .alert {
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body class="bg-light">
+    {% include 'navbar.html' %}
+
+    <div class="container mt-4">
+
+        <div class="row">
+            <!-- Upload Form -->
+            <div class="col-md-6">
+                <h2>Upload Image</h2>
+                <form method="POST" enctype="multipart/form-data">
+                    <div class="form-group">
+                        <label for="photo">Select Image File:</label>
+                        <input type="file" name="photo" class="form-control-file" id="photo">
+                        <button type="submit" class="btn btn-primary mt-3">Upload and Mark Attendance</button>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Webcam Capture -->
+            <div class="col-md-6">
+                <h2>Or Use Webcam</h2>
+                <video id="video" autoplay></video>
+                <canvas id="canvas" width="320" height="240" style="display:none;"></canvas>
+                <form id="webcamForm" method="POST" enctype="multipart/form-data">
+                    <input type="hidden" name="photo" id="photoInput">
+                    <button type="button" class="btn btn-success mt-2" onclick="capture()">Capture & Submit</button>
+                </form>
+            </div>
+        </div>
+
+
+
+        <!-- Feedback after submitting attendance -->
+        <div id="feedback" class="mt-4"></div>
+    </div>
+
+    <script>
+        let video = document.getElementById('video');
+        let canvas = document.getElementById('canvas');
+        let photoInput = document.getElementById('photoInput');
+
+        // Start webcam
+        navigator.mediaDevices.getUserMedia({ video: true })
+            .then(stream => {
+                video.srcObject = stream;
+                window.localStream = stream; // Save to stop later
+            })
+            .catch(err => {
+                console.error("Error accessing webcam: " + err);
+                alert("Unable to access webcam. Please try again.");
+            });
+
+        function capture() {
+            // Draw the current video frame to the canvas
+            canvas.getContext('2d').drawImage(video, 0, 0, canvas.width, canvas.height);
+
+            // Stop the webcam after capturing
+            window.localStream.getTracks().forEach(track => track.stop());
+
+            // Show loading message
+            document.getElementById('feedback').innerHTML = "<p>Processing image, please wait...</p>";
+
+            // Convert canvas to a blob and send to server
+            canvas.toBlob(blob => {
+                const formData = new FormData();
+                formData.append('photo', blob, 'captured.jpg');
+
+                fetch('/attendance', {
+                    method: 'POST',
+                    body: formData
+                })
+                .then(res => res.text())
+                .then(html => {
+                    document.getElementById('feedback').innerHTML = html;
+                })
+                .catch(err => {
+                    document.getElementById('feedback').innerHTML = "<p class='text-danger'>Error processing the image. Please try again.</p>";
+                });
+            }, 'image/jpeg');
+        }
+    </script>
+
+</body>
+</html>

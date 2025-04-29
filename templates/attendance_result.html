@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Attendance Result</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 40px;
+            background-color: #f7f7f7;
+        }
+        .container {
+            background: white;
+            display: inline-block;
+            padding: 30px 50px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+        .status {
+            font-size: 1.2rem;
+            margin-top: 20px;
+            color: #333;
+        }
+        .success { color: green; }
+        .error { color: red; }
+        .button {
+            display: inline-block;
+            margin-top: 30px;
+            padding: 10px 20px;
+            font-size: 1rem;
+            background-color: #007BFF;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+        }
+        .button:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+
+    {% include 'navbar.html' %}
+
+    <div class="container mt-4">
+        {% if name %}
+            <h2>Hello, {{ name }}!</h2>
+        {% else %}
+            <h2>Unknown Face</h2>
+        {% endif %}
+        
+        <p class="status {% if 'not logged' in status or 'not recognized' in status %}error{% else %}success{% endif %}">
+            {{ status }}
+        </p>
+
+        <a href="/" class="button">Back to Home</a>
+    </div>
+
+</body>
+</html>
