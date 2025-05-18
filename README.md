@@ -66,11 +66,11 @@ pip install deepface opencv-python pandas numpy
 
 ## How to Use
 
-**Run ```bash
+**Run**
+```bash
    python app.py
-   ``` to run the Flask app**
-
-Else;
+```
+to start the Flask App. To understand how the components work individually, do the following:
 
 1. **Register Students**:
    Capture and save face images of students to the `known_faces/` directory.
